@@ -8,6 +8,6 @@ namespace hospital.model
     {
         [Column("JOB_SPECIALISATION", TypeName = "VARCHAR(30)")]
         [Required]
-        public string jobspecialisation { get; set; }
+        public EJobSpecialisation JobSpecialisation { get; set; }
     }
 }
