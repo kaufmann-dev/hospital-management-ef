@@ -1,41 +1,64 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace hospital.model
-{
-    public class HospitalDbContext : DbContext
-    {
-        public HospitalDbContext(DbContextOptions<HospitalDbContext> options) : base(options)
-        {
+namespace hospital.model {
+    public class HospitalDbContext : DbContext{
+
+        public HospitalDbContext(DbContextOptions<HospitalDbContext> options) : base(options) {
+            
         }
+        public DbSet<AEmployee> Employees { get; set; }
+
+        public DbSet<Physician> Physicans { get; set; }
+
+        public DbSet<Caretaker> Caretakers { get; set; }
+
+        public DbSet<Facility> HospitalFacilities { get; set; }
+
+        public DbSet<Ward> Wards { get; set; }
+
+        public DbSet<Occupation> Occupations { get; set; }
         
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Caretakers> Caretakers { get; set; }
-        public DbSet<Physicians> Physicians { get; set; }
-        public DbSet<Facilities> Facilities { get; set; }
-        public DbSet<Wards> Wards { get; set; }
-        public DbSet<CTHasWards> CareWards { get; set; }
-        
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<Employee>()
+        protected override void OnModelCreating(ModelBuilder builder) {
+            builder.Entity<AEmployee>()
                 .HasIndex(e => e.Svnr)
                 .IsUnique();
-            builder.Entity<Facilities>()
-                .HasIndex(f => f.Name)
-                .IsUnique();
-            builder.Entity<Facilities>()
-                .HasIndex(f => f.PhoneNr)
-                .IsUnique();
-            builder.Entity<Caretakers>()
+
+            builder.Entity<Caretaker>()
                 .HasOne(c => c.Superior)
-                .WithOne();
-            builder.Entity<Wards>()
-                .HasOne<Physicians>()
-                .WithMany();
-            builder.Entity<Wards>()
-                .HasKey(w => new {w.HospitalId, w.Name});
-            builder.Entity<CTHasWards>()
-                .HasKey(c => new {c.CaretakerId, c.WardName, c.Hours});
+                .WithMany()
+                .HasForeignKey(c => c.SuperiorId);
+            
+            builder.Entity<Facility>()
+                .HasIndex(h => h.Name)
+                .IsUnique();
+
+            builder.Entity<Facility>()
+                .HasIndex(h => h.PhoneNr)
+                .IsUnique();
+
+            builder.Entity<Ward>()
+                .HasOne(w => w.Manager)
+                .WithOne()
+                .HasForeignKey<Ward>(w => w.ManagerId);
+
+            builder.Entity<Ward>()
+                .HasOne(w => w.Facility)
+                .WithMany()
+                .HasForeignKey(w => w.FacilityId);
+
+            builder.Entity<Occupation>()
+                .HasKey(o => new {o.EmployeeId, o.WardId});
+
+            builder.Entity<Occupation>()
+                .HasOne(o => o.Employee)
+                .WithMany()
+                .HasForeignKey(o => o.EmployeeId);
+
+            builder.Entity<Occupation>()
+                .HasOne(o => o.Ward)
+                .WithMany()
+                .HasForeignKey(o => o.WardId);
         }
+        
     }
 }

@@ -1,22 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace hospital.model
-{
+namespace hospital.model {
     [Table("HOSPITAL_FACILITIES")]
-    public class Facilities
-    {
+    public class Facility {
+
         [Column("FACILITY_ID")]
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
-        
+
+        [Required]
         [Column("NAME", TypeName = "VARCHAR(100)")]
-        [Required]
         public string Name { get; set; }
-        
-        [Column("PHONE_NR", TypeName = "VARCHAR(20)")]
+
         [Required]
-        public string PhoneNr { get; set; }
+        [Column("PHONE_NR", TypeName = "VARCHAR(20)")]
+        public string  PhoneNr { get; set; }
+        
     }
 }
