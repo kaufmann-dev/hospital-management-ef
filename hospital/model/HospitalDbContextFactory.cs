@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,8 +13,11 @@ namespace hospital.model {
 
             optionsBuilder
                 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
-                .UseMySql(properties["ConnectionStrings:DefaultConnection"],
-                    ServerVersion.FromString("8.0.23"), null);
+                .UseMySql(
+                    properties["ConnectionStrings:DefaultConnection"],
+                    new MySqlServerVersion(new Version(8,0,23)),
+                    null
+                );
 
             return new HospitalDbContext(optionsBuilder.Options);
         }
